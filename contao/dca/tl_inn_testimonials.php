@@ -45,8 +45,6 @@ $GLOBALS['TL_DCA']['tl_inn_testimonials'] = array
         'sorting'           => array
         (
             'mode'        => DataContainer::MODE_SORTED,
-            'fields'      => array('tstamp'),
-            'flag'        => 1,
             'panelLayout' => 'filter;sort,search,limit'
         ),
         'label'             => array

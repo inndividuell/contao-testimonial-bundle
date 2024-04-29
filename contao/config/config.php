@@ -4,7 +4,12 @@ use Inndividuell\ContaoTestimonialsBundle\TestimonialForm;
 /**
  * Back end modules
  */
-$GLOBALS['BE_MOD']['content']['testimonials'] = array(
+array_insert($GLOBALS['BE_MOD'], 1, array
+(
+    'inn_testimonials' => array
+    ()
+));
+$GLOBALS['BE_MOD']['inn_testimonials']['testimonials'] = array(
     'tables' => array('tl_inn_testimonials'),
     'icon'   => 'system/modules/perisoft_bereiche/assets/images/bereiche.png'
 );

@@ -448,7 +448,7 @@ class tl_inn_testimonials extends \Backend
 
     public function copyTestimonial($row, $href, $label, $title, $icon, $attributes)
     {
-        return System::getContainer()->get('security.helper')->isGranted(ContaoCorePermissions::USER_CAN_CREATE_FORMS) ? '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
+        return  '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . 'ss</a> ';
     }
 
 }

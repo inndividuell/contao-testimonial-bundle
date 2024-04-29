@@ -17,8 +17,7 @@ class TestimonialDisplay extends \Module
     protected function compile()
     {
         /** @var \Contao\Database\Result $rs */
-        $rs = Database::getInstance()
-            ->query('SELECT * FROM tl_inn_testimonials ORDER BY id');
+        $rs = $this->Database->query('SELECT * FROM tl_inn_testimonials ORDER BY id');
 
         $this->Template->projects = $rs->fetchAllAssoc();
 

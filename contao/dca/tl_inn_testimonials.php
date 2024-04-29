@@ -45,6 +45,7 @@ $GLOBALS['TL_DCA']['tl_inn_testimonials'] = array
         'sorting'           => array
         (
             'mode'        => DataContainer::MODE_SORTED,
+            'fields'                  => array('date_added'),
             'panelLayout' => 'filter;sort,search,limit'
         ),
         'label'             => array
@@ -70,19 +71,12 @@ $GLOBALS['TL_DCA']['tl_inn_testimonials'] = array
                 'href'  => 'act=edit',
                 'icon'  => 'edit.gif'
             ),
-            'cut' => array
-            (
-                'href'                => 'act=paste&amp;mode=cut',
-                'icon'                => 'cut.svg',
-                'attributes'          => 'onclick="Backend.getScrollOffset()"',
-//                'button_callback'     => array('tl_page', 'cutPage')
-            ),
             'copy' => array
             (
                 'href'                => 'act=paste&amp;mode=copy',
                 'icon'                => 'copy.svg',
                 'attributes'          => 'onclick="Backend.getScrollOffset()"',
-//				'button_callback'     => array('tl_inn_team_members', 'copyPage')
+                'button_callback'     => array('tl_inn_testimonials', 'copyTestimonial')
             ),
 
             'delete' => array
@@ -450,6 +444,11 @@ class tl_inn_testimonials extends \Backend
         $this->Database->prepare("UPDATE tl_inn_testimonials SET tstamp=". time() .", featured='" . ($blnFeatured ? 1 : '') . "' WHERE id=?")
             ->execute($intId);
         $this->createNewVersion('tl_inn_testimonials', $intId);
+    }
+
+    public function copyTestimonial($row, $href, $label, $title, $icon, $attributes)
+    {
+        return System::getContainer()->get('security.helper')->isGranted(ContaoCorePermissions::USER_CAN_CREATE_FORMS) ? '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
     }
 
 }

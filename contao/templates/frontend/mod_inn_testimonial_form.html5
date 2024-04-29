@@ -1,0 +1,185 @@
+<?php
+
+
+$fields = $this->inn_fields;
+$fields = unserialize($fields);
+$use_stars = $this->inn_use_stars;
+$show_star_number = $this->inn_show_starnumber;
+$return_text = $this->inn_return_text;
+$notification = $this->inn_notification;
+
+if($this->inn_notification=='' || is_null($this->inn_notification)){
+    $notification_id = 'false';
+}else{
+    $notification_id = $this->inn_notification;
+}
+
+?>
+<div class="inn_testimonial_form_container">
+    <div id="inn_form_spinner" style="display:none;">
+        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+    </div>
+    <form id="inn_testimonial_form">
+
+        <div class="inn-flex-container">
+            <div class="inn-flex-item">
+                <?php if (in_array('anrede', $fields)): ?>
+                    <div class="widget-select widget select">
+                        <select name="anrede" id="anrede" class="select">
+                            <option>Anrede</option>
+                            <option>Herr</option>
+                            <option>Frau</option>
+                        </select>
+                    </div>
+                <?php endif; ?>
+                <?php if (in_array('name', $fields)): ?>
+                    <div class="inn-flex-container">
+                        <div class="widget-text widget">
+                            <input id="firstname" class="firstname" type="text" name="firstname" placeholder="Vorname" required/>
+                        </div>
+                        <div class="widget-text widget">
+                            <input id="lastname" class="lastname" type="text" name="lastname" placeholder="Nachname" required/>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                <?php if (in_array('company', $fields)): ?>
+                    <div class="widget-text widget">
+                        <input id="company" class="company" type="text" name="company" placeholder="Unternehmen" required/>
+                    </div>
+                <?php endif; ?>
+                <?php if (in_array('position', $fields)): ?>
+                    <div class="widget-text widget">
+                        <input id="position" class="position" type="text" name="position" placeholder="Ihre Position" required/>
+                    </div>
+                <?php endif; ?>
+                <?php if (in_array('location', $fields)): ?>
+                    <div class="widget-text widget">
+                        <input id="location" class="location" type="text" name="location" placeholder="Ort" required/>
+                    </div>
+                <?php endif; ?>
+                <div class="widget-text widget">
+                    <input id="email" class="email" type="email" name="email" placeholder="E-Mail" required/>
+                </div>
+                <?php if (in_array('phone', $fields)): ?>
+                    <div class="widget-text widget">
+                        <input id="phone" class="phone" type="text" name="phone" placeholder="Telefonnummer" required/>
+                    </div>
+                <?php endif; ?>
+
+            </div>
+            <div class="inn-flex-item">
+                <?php if (in_array('rating', $fields)): ?>
+                <div class="rate-container">
+                    <?php if($use_stars):?>
+                    <div class="rate">
+                        <input type="radio" id="star5" name="rate" value="5" />
+                        <label for="star5" title="text">5 stars</label>
+                        <input type="radio" id="star4" name="rate" value="4" />
+                        <label for="star4" title="text">4 stars</label>
+                        <input type="radio" id="star3" name="rate" value="3" />
+                        <label for="star3" title="text">3 stars</label>
+                        <input type="radio" id="star2" name="rate" value="2" />
+                        <label for="star2" title="text">2 stars</label>
+                        <input type="radio" id="star1" name="rate" value="1" required />
+                        <label for="star1" title="text">1 star</label>
+                    </div>
+                    <?php endif; ?>
+                    <?php if($show_star_number):?>
+                    <div class="rate-number">
+                        0.0
+                    </div>
+                    <?php endif; ?>
+                </div>
+                <?php endif; ?>
+                <?php if (in_array('title', $fields)): ?>
+                    <div class="widget-textarea widget">
+                        <input id="title" class="title" type="text" name="title" placeholder="Titel der Bewertung" required/>
+                    </div>
+                <?php endif; ?>
+                <?php if (in_array('text', $fields)): ?>
+                    <div class="widget-textarea widget">
+                        <textarea id="text" class="text" type="text" name="text" placeholder="Nachricht" required></textarea>
+                    </div>
+                <?php endif; ?>
+                <button type="submit" id="real_submit_testimonial"  class="submit input-submit" style="display:none">Submit</button>
+                <div class="inn-flex-container inn-action-container">
+                    <div class="inn-flex-item"><p>
+                            All Ihre Angaben werden natürlich vertraulich behandelt. Ihre E-Mailadresse und Ihr
+                            Firmennname werden nicht veröentlicht.
+                        </p></div>
+                    <div class="inn-flex-item">
+                        <button type="submit" id="submit_testimonial" class="submit input-submit">Senden</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+    <div class="testimonial-return-text" style="display:none;">
+        <div class="inner-return-text">
+            <?=$return_text;?>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $('.rate :input').change(function(){
+        if($('.rate-number').length){
+            var $val = $(this).val();
+            $val = parseFloat($val);
+            $val = $val.toFixed(1);
+            $('.rate-number').html($val);
+        }
+    });
+    $('#inn_testimonial_form').submit(function(e){
+        e.preventDefault();
+
+        $('#inn_form_spinner').css('display','flex');
+        var $send_array = {};
+        var $val = '';
+        var $name= '';
+        $('#inn_testimonial_form :input').each(function(){
+            if($(this).attr('type')==='radio'){
+                if($(this).is(':checked')){
+                    $val = $(this).val();
+                    $send_array['rate'] = $val;
+                }
+            }else{
+                $name = $(this).attr('name');
+                $val = $(this).val();
+                $send_array[$name] = $val;
+            }
+
+        });
+        $send_array['notification_id']=<?= $notification_id ?>;
+        $send_array['inn_testimonial']=1;
+        console.log($send_array);
+        $.ajax({
+            // pfad zur PHP Datei (ab HTML Datei)
+            // url: "{{env::url}}/system/modules/inn_testimonials/ajax/SendTestimonial.php",
+            url: "/",
+            // Daten, die an Server gesendet werden soll in JSON Notation
+            data: $send_array,
+            dataType: "json",
+            // Methode POST oder GET
+            type: "POST",
+            // Callback-Funktion, die nach der Antwort des Servers ausgefuehrt wird
+            success: function(data) {
+                console.log('success');
+                console.log(data);
+                $('#inn_form_spinner').css('display','none');
+                $('.inn_testimonial_form_container form').css('display','none');
+                $('.inn_testimonial_form_container .testimonial-return-text').css('display','flex');
+            },
+            error: function(data){
+                console.log('error');
+                console.log(data);
+                $('#inn_form_spinner').css('display','none');
+                $('.inn_testimonial_form_container form').css('display','none');
+                $('.inn_testimonial_form_container .testimonial-return-text').css('display','flex');
+            }
+        });
+    })
+
+</script>

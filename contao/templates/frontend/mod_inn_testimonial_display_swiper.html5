@@ -1,0 +1,110 @@
+<?php
+$this->import('Database');
+$sql = "SELECT * FROM tl_inn_testimonials WHERE published=1";
+/*
+ * 'no-featured' => 'keine Einschränkung',
+        'only-featured' => 'Zeige nur Hervorgehobene',
+        'hide-featured' => 'Zeige Hervorgebene nicht'
+ */
+$fields = $this->inn_display_fields;
+$fields = unserialize($fields);
+
+if ($this->inn_testimonials_show_featured_only == 'only-featured') {
+    $sql .= " AND featured=1";
+} elseif ($this->inn_testimonials_show_featured_only == 'hide-featured') {
+    $sql .= " AND featured <> 1";
+}
+if ($this->inn_order_by_time !== '0' && $this->inn_order_by_time !== 0 && $this->inn_order_by_time !== null) {
+    $sql .= ' ORDER BY date_added DESC';
+}
+if ($this->inn_count !== '0' && $this->inn_count !== 0 && $this->inn_count !== null) {
+    $sql .= ' LIMIT ' . $this->inn_count;
+}
+
+$result = $this->Database->prepare($sql)->execute();
+$uid ='swiper_'.hash('sha256',uniqid());
+?>
+<?php if ($result->numRows == 0): ?>
+    <div class="inn_testimonial_no_records">
+        Keine Einträge gefunden.
+    </div>
+<?php else: ?>
+    <div id="<?=$uid?>" class="v-swiper v-testimonial-swiper swiper-container">
+        <div class="swiper-wrapper">
+            <?php while ($row = $result->fetchAssoc()): ?>
+                <div class="swiper-slide">
+                    <div class="v-testimonial-container block <?= $this->i_style ?>" <?php echo $this->cssID ?>>
+
+                        <div class="upper-testimonial">
+                            <div class="customer-info">
+                                <div class="c-name">
+                                    <?php if (in_array('name', $fields)): ?>
+                                        <?= $row['name'] ?>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="c-company">
+                                    <?php if (in_array('c_position', $fields)): ?>
+                                        <?= $row['c_position'] ?>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="c-location">
+                                    <?php if (in_array('location', $fields)): ?>
+                                        <?= $row['location'] ?>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <div class="stars-container">
+
+                                <?php for ($i = 1; $i <= 5; $i++) {
+                                    if ($row['rating'] == 0) {
+                                        echo '<i class="far fa-star"></i>';
+                                    } else {
+                                        echo '<i class="fas fa-star"></i>';
+                                        $row['rating']--;
+                                    }
+                                } ?>
+                            </div>
+                        </div>
+                        <div class="lower-testimonial">
+                            <?php if (in_array('title', $fields)): ?>
+                                <?= $row['title'] ?>
+                            <?php endif; ?>
+                            <?php if (in_array('text', $fields)): ?>
+                                <?= $row['text'] ?>
+                            <?php endif; ?>
+                        </div>
+
+                    </div>
+                </div>
+            <?php endwhile; ?>
+        </div>
+        <div class="swiper-button-prev">
+
+        </div>
+        <div class="swiper-button-next">
+
+        </div>
+    </div>
+    <script>
+        var swiper<?=$uid?> = new Swiper('#<?=$uid;?>',{
+            slidesPerView: 3,
+            spaceBetween:20,
+            slidesPerGroup:3,
+            loop: true,
+            navigation:{
+                nextEl:'#<?= $uid;?> .swiper-button-next',
+                prevEl:'#<?= $uid;?> .swiper-button-prev'
+            },
+            breakpoints: {
+                767: {
+                    slidesPerView: 1,
+                    slidesPerGroup:1
+                },
+                1023: {
+                    slidesPerView: 2,
+                    slidesPerGroup:2
+                },
+            }
+        });
+    </script>
+<?php endif; ?>

@@ -72,11 +72,21 @@ $GLOBALS['TL_DCA']['tl_inn_testimonials'] = array
                 'href'  => 'act=edit',
                 'icon'  => 'edit.gif'
             ),
-            'copy'   => [
-                'label' => &$GLOBALS['TL_LANG']['tl_dlh_googlemaps_elements']['copy'],
-                'href'  => 'act=paste&amp;mode=copy',
-                'icon'  => 'copy.gif',
-            ],
+            'cut' => array
+            (
+                'href'                => 'act=paste&amp;mode=cut',
+                'icon'                => 'cut.svg',
+                'attributes'          => 'onclick="Backend.getScrollOffset()"',
+//                'button_callback'     => array('tl_page', 'cutPage')
+            ),
+            'copy' => array
+            (
+                'href'                => 'act=paste&amp;mode=copy',
+                'icon'                => 'copy.svg',
+                'attributes'          => 'onclick="Backend.getScrollOffset()"',
+//				'button_callback'     => array('tl_inn_team_members', 'copyPage')
+            ),
+
             'delete' => array
             (
                 'label'      => &$GLOBALS['TL_LANG']['tl_inn_testimonials']['delete'],

@@ -1,5 +1,6 @@
 <?php
 
+$GLOBALS['TL_LANG']['MOD']['inn_testimonials'][0] = 'Kundenbewertungen';
 $GLOBALS['TL_LANG']['MOD']['testimonials'][0] = 'Kundenbewertungen';
 $GLOBALS['TL_LANG']['MOD']['testimonials'][1] = 'Kundenbewertungen verwalten';
 $GLOBALS['TL_LANG']['MOD']['project_types'][0] = 'Projekt Typen';
